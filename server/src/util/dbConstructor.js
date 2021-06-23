@@ -39,26 +39,36 @@ async function buildDatabase(db) {
     );
   });
 
-  /*db.each(
+  db.run(
     `CREATE TABLE vaccinations(
-    vaccinationid VARCHAR NOT NULL UNIQUE PRIMARY KEY,
-    sourceBottle VARCHAR UNIQUE NOT NULL,
+    vaccinationId VARCHAR NOT NULL UNIQUE PRIMARY KEY,
+    sourceBottle VARCHAR NOT NULL,
     gender VARCHAR NOT NULL,
     vaccinationDate VARCHAR NOT NULL
     )`,
-    (err = {
+    (err) => {
       if(err) {
         console.error("Error creating table:", err.message);
-      },
-    })
-  );*/
+      } else {
+        populatVaccinationsTable(db, vaccinations);
+      }
+    }
+  );
 }
 
 function populateBrandTable(db, brand, contents) {
   contents.forEach((row) => {
     db.run(
-      `INSERT INTO ${brand}(id, orderNumber, responsiblePerson, healthCareDistrict, vaccine, injections, arrived) VALUES("${row.id}", ${row.orderNumber}, "${row.responsiblePerson}", "${row.healthCareDistrict}", "${row.vaccine}", ${row.injections}, "${row.arrived}")`
+      `INSERT INTO ${brand}(id, orderNumber, responsiblePerson, healthCareDistrict, vaccine, injections, arrived) 
+      VALUES("${row.id}", ${row.orderNumber}, "${row.responsiblePerson}", "${row.healthCareDistrict}", "${row.vaccine}", ${row.injections}, "${row.arrived}")`
     );
+  });
+}
+
+function populatVaccinationsTable(db, contents) {
+  contents.forEach((row) => {
+    db.run(`INSERT INTO vaccinations(vaccinationId, sourceBottle, gender, vaccinationDate) 
+    VALUES("${row['vaccination-id']}", "${row.sourceBottle}", "${row.gender}", "${row.vaccinationDate}")`);
   });
 }
 
