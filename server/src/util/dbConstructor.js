@@ -47,7 +47,7 @@ async function buildDatabase(db) {
     vaccinationDate VARCHAR NOT NULL
     )`,
     (err) => {
-      if(err) {
+      if (err) {
         console.error("Error creating table:", err.message);
       } else {
         populatVaccinationsTable(db, vaccinations);
@@ -68,7 +68,7 @@ function populateBrandTable(db, brand, contents) {
 function populatVaccinationsTable(db, contents) {
   contents.forEach((row) => {
     db.run(`INSERT INTO vaccinations(vaccinationId, sourceBottle, gender, vaccinationDate) 
-    VALUES("${row['vaccination-id']}", "${row.sourceBottle}", "${row.gender}", "${row.vaccinationDate}")`);
+    VALUES("${row["vaccination-id"]}", "${row.sourceBottle}", "${row.gender}", "${row.vaccinationDate}")`);
   });
 }
 
