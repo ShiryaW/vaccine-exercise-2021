@@ -1,6 +1,15 @@
+const sqlite = require("sqlite3").verbose();
 const reader = require("./reader");
 
 const { FILEPATH } = require("./constants");
+
+const db = new sqlite.Database(":memory:", async (err) => {
+  if (err) {
+    return console.error("Error connecting to database:", err.message);
+  }
+  console.log("Connected to SQLite3 database.");
+  await buildDatabase(db);
+});
 
 async function buildDatabase(db) {
   const antiqua = await reader.readFile(`${FILEPATH.RESOURCES}/Antiqua.source`);
@@ -73,5 +82,5 @@ function populatVaccinationsTable(db, contents) {
 }
 
 module.exports = {
-  buildDatabase,
+  db,
 };
