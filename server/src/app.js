@@ -21,7 +21,7 @@ app.get("/health", healthCheckHandler);
 
 app.get("/orders", (req, res) => {
   if (!req.query.brand || !BRANDS.includes(req.query.brand)) {
-    res.status(500).send({ message: "invalid query" });
+    res.status(404).send({ message: "invalid query" });
     return;
   }
 
