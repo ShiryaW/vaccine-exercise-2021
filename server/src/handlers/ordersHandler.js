@@ -11,6 +11,7 @@ module.exports = (req, res) => {
 
   db.all(sql, [], (err, rows) => {
     if (err) {
+      res.status(500).send();
       throw err;
     }
 

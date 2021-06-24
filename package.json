@@ -7,7 +7,8 @@
     "start": "run-p start-dev start-api",
     "start-dev": "cd client && npm start",
     "start-api": "nodemon --watch server server/src",
-    "lint-client": "eslint --ext js --config .eslintrc.json client/src",
+    "lint-client": "eslint --ext jsx --config client/.eslintrc.json client/src",
+    "lint-server": "eslint --ext js --config server/.eslintrc.json server/src",
     "test-server": "jest --config server/jest.config.json"
   },
   "repository": {

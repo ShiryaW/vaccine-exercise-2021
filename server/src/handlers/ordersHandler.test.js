@@ -1,4 +1,3 @@
-const { it, expect } = require("@jest/globals");
 const request = require("supertest");
 
 describe("/orders", () => {
