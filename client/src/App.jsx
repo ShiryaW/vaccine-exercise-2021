@@ -1,43 +1,18 @@
 import "./App.css";
 import React, { Component } from "react";
 import { AgGridReact } from "ag-grid-react";
+import { Dropdown } from "./Dropdown";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import BRANDS from "./util/constants";
 
 export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rows: [
-        {
-          id: "6da3a8cf-c923-4c77-8f80-c69c935fe1df",
-          orderNumber: 1,
-          responsiblePerson: "Joonatan Siloma",
-          healthCareDistrict: "KYS",
-          vaccine: "Antiqua",
-          injections: 4,
-          arrived: "2021-01-11T08:59:28.642790Z",
-        },
-        {
-          id: "1251aa6c-ebaf-4e33-89d3-d6f210497b94",
-          orderNumber: 2,
-          responsiblePerson: "Tarvo Puro",
-          healthCareDistrict: "TAYS",
-          vaccine: "Antiqua",
-          injections: 4,
-          arrived: "2021-01-10T01:29:26.642846Z",
-        },
-        {
-          id: "c00e2610-5bd9-4f84-9597-1e7febfae62c",
-          orderNumber: 4,
-          responsiblePerson: "Linda Väisälä",
-          healthCareDistrict: "HYKS",
-          vaccine: "Antiqua",
-          injections: 4,
-          arrived: "2021-01-08T05:33:37.642901Z",
-        },
-      ],
+      rowData: [],
+      selectedManufacturer: BRANDS.ANTIQUA.value,
     };
 
     this.columnDefs = [
@@ -70,53 +45,74 @@ export class App extends Component {
         field: "arrived",
       },
     ];
+
+    this.gridOptions = {
+      defaultColDef: { resizable: true },
+      columnDefs: this.columnDefs,
+      onGridReady: this.onGridReady,
+    };
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     window.addEventListener("resize", this.handleResize);
-  }
+  };
 
-  handleResize(e) {
-    //TODO: get this to work
-    console.log(e);
+  handleResize = () => {
     this.gridApi && this.gridApi.sizeColumnsToFit();
-  }
+  };
 
   handleRowsFetch = async () => {
-    await fetch(`/orders?brand=antiqua`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    })
+    await fetch(
+      `/orders?brand=${encodeURIComponent(this.state.selectedManufacturer)}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    )
       .then((res) => {
-        return res.json();
+        if (res.status === 200) {
+          return res.json();
+        }
       })
       .then((data) => {
-        console.log(data);
+        this.setState({
+          rowData: data,
+        });
       });
   };
 
-  onGridReady({ api }) {
+  onGridReady = async ({ api }) => {
+    await this.handleRowsFetch(this.state.selectedManufacturer);
     this.gridApi = api;
     this.gridApi.sizeColumnsToFit();
-  }
+  };
 
-  render() {
-    const gridOptions = {
-      rowData: this.state.rows,
-      columnDefs: this.columnDefs,
-      onGridReady: this.handleRowsFetch,
-    };
+  onSelectionChanged = (e) => {
+    this.setState(
+      {
+        selectedManufacturer: e.target.value,
+      },
+      async () => {
+        await this.handleRowsFetch(this.state.selectedManufacturer);
+      }
+    );
+  };
 
+  render = () => {
     return (
-      <div className="Vaccines">
+      <div className="app">
+        <Dropdown onChange={this.onSelectionChanged} />
         <div className="ag-theme-alpine">
-          <AgGridReact gridOptions={gridOptions} />
+          <AgGridReact
+            gridOptions={this.gridOptions}
+            rowData={this.state.rowData}
+          />
         </div>
       </div>
     );
-  }
+  };
 }
 
 export default App;
