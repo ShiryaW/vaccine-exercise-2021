@@ -2,7 +2,9 @@ import "./App.css";
 import React, { Component } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { Dropdown } from "./Dropdown";
+import { Footer } from "./Footer";
 
+import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import BRANDS from "./util/constants";
@@ -13,42 +15,14 @@ export class App extends Component {
     this.state = {
       rowData: [],
       selectedManufacturer: BRANDS.ANTIQUA.value,
+      totalItems: 0,
+      isGroupingView: false,
     };
-
-    this.columnDefs = [
-      {
-        headerName: "ID",
-        field: "id",
-      },
-      {
-        headerName: "Order number",
-        field: "orderNumber",
-      },
-      {
-        headerName: "Responsible person",
-        field: "responsiblePerson",
-      },
-      {
-        headerName: "Healthcare district",
-        field: "healthCareDistrict",
-      },
-      {
-        headerName: "Vaccine",
-        field: "vaccine",
-      },
-      {
-        headerName: "Injections",
-        field: "injections",
-      },
-      {
-        headerName: "Arrived on",
-        field: "arrived",
-      },
-    ];
 
     this.gridOptions = {
       defaultColDef: { resizable: true },
-      columnDefs: this.columnDefs,
+      animateRows: true,
+      columnDefs: this.getColumnDefs(),
       onGridReady: this.onGridReady,
     };
   }
@@ -79,8 +53,51 @@ export class App extends Component {
       .then((data) => {
         this.setState({
           rowData: data,
+          totalItems: data.length,
         });
       });
+  };
+
+  getColumnDefs = () => {
+    return [
+      {
+        headerName: "ID",
+        field: "id",
+      },
+      {
+        headerName: "Order number",
+        field: "orderNumber",
+        sortable: true,
+        unSortIcon: true,
+      },
+      {
+        headerName: "Responsible person",
+        field: "responsiblePerson",
+        sortable: true,
+        unSortIcon: true,
+      },
+      {
+        headerName: "Healthcare district",
+        field: "healthCareDistrict",
+        ...(this.state.isGroupingView
+          ? { rowGroup: true }
+          : { rowGroup: false }),
+      },
+      {
+        headerName: "Vaccine",
+        field: "vaccine",
+      },
+      {
+        headerName: "Injections",
+        field: "injections",
+      },
+      {
+        headerName: "Arrived on",
+        field: "arrived",
+        sortable: true,
+        unSortIcon: true,
+      },
+    ];
   };
 
   onGridReady = async ({ api }) => {
@@ -100,16 +117,28 @@ export class App extends Component {
     );
   };
 
+  onToggle = () => {
+    this.setState(
+      {
+        isGroupingView: !this.state.isGroupingView,
+      },
+      () => {
+        this.gridApi.setColumnDefs(this.getColumnDefs());
+      }
+    );
+  };
+
   render = () => {
     return (
       <div className="app">
-        <Dropdown onChange={this.onSelectionChanged} />
+        <Dropdown onChange={this.onSelectionChanged} onToggle={this.onToggle} />
         <div className="ag-theme-alpine">
           <AgGridReact
             gridOptions={this.gridOptions}
             rowData={this.state.rowData}
           />
         </div>
+        <Footer totalItems={this.state.totalItems} />
       </div>
     );
   };

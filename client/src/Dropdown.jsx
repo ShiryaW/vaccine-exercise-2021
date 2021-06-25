@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Switch, FormControlLabel } from "@material-ui/core";
 import PropTypes from "prop-types";
 import BRANDS from "./util/constants";
 
@@ -10,7 +11,7 @@ export class Dropdown extends Component {
   render = () => {
     return (
       <div className="dropdown">
-        <p>Select a manufacturer:</p>
+        <p>Select manufacturer:</p>
         <select id="selectBox" onChange={this.props.onChange}>
           <option value={BRANDS.ANTIQUA.value}>{BRANDS.ANTIQUA.label}</option>
           <option value={BRANDS.SOLARBUDDHICA.value}>
@@ -18,6 +19,12 @@ export class Dropdown extends Component {
           </option>
           <option value={BRANDS.ZERPFY.value}>{BRANDS.ZERPFY.label}</option>
         </select>
+        <FormControlLabel
+          label="Group by healthcare district"
+          labelPlacement="start"
+          control={<Switch />}
+          onChange={this.props.onToggle}
+        ></FormControlLabel>
       </div>
     );
   };
@@ -25,4 +32,5 @@ export class Dropdown extends Component {
 
 Dropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onToggle: PropTypes.func.isRequired,
 };

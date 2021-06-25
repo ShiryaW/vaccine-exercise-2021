@@ -6,13 +6,14 @@
 .ag-theme-alpine {
   margin: 0 auto;
   width: 100%;
-  height: 96vh;
+  height: 92vh;
   overflow-x: hidden;
 }
 
 .dropdown {
   display: flex;
   height: 4vh;
+  background-color: #f0f0f0;
 }
 
 .dropdown p {
@@ -20,8 +21,25 @@
 }
 
 select {
-  display: flex;
-  padding: 12px;
+  padding-left: 10px;
+  margin: 12px;
   font-size: 16px;
   width: 250px;
+}
+
+.MuiFormControlLabel-root {
+  padding: 8px;
+  position: fixed;
+  right: 8px;
+}
+
+.footer {
+  background-color: f0f0f0;
+  font-weight: bold;
+  padding: 0 25px;
+  height: 2vh;
+}
+
+.footer p {
+  margin: 1vh;
 }
