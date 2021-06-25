@@ -7,16 +7,17 @@ import { Footer } from "./Footer";
 import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-import BRANDS from "./util/constants";
+import VIEWS from "./util/constants";
 
 export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       rowData: [],
-      selectedManufacturer: BRANDS.ANTIQUA.value,
+      selectedView: VIEWS.ANTIQUA.value,
       totalItems: 0,
       isGroupingView: false,
+      groupingEnabled: true,
     };
 
     this.gridOptions = {
@@ -36,8 +37,43 @@ export class App extends Component {
   };
 
   handleRowsFetch = async () => {
+    if (this.state.selectedView === VIEWS.VACCINATIONS.value) {
+      await this.fetchVaccinations();
+    } else {
+      await this.fetchManufacturer();
+    }
+  };
+
+  fetchVaccinations = async () => {
+    await fetch(`/vaccinations`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+      })
+      .then((data) => {
+        this.setState(
+          {
+            rowData: data,
+            totalItems: data.length,
+            groupingEnabled: false,
+          },
+          () => {
+            this.gridApi && this.gridApi.setColumnDefs(this.getColumnDefs());
+            this.gridApi && this.gridApi.sizeColumnsToFit();
+          }
+        );
+      });
+  };
+
+  fetchManufacturer = async () => {
     await fetch(
-      `/orders?brand=${encodeURIComponent(this.state.selectedManufacturer)}`,
+      `/orders?brand=${encodeURIComponent(this.state.selectedView)}`,
       {
         method: "GET",
         headers: {
@@ -51,57 +87,87 @@ export class App extends Component {
         }
       })
       .then((data) => {
-        this.setState({
-          rowData: data,
-          totalItems: data.length,
-        });
+        this.setState(
+          {
+            rowData: data,
+            totalItems: data.length,
+            groupingEnabled: true,
+          },
+          () => {
+            this.gridApi && this.gridApi.setColumnDefs(this.getColumnDefs());
+            this.gridApi && this.gridApi.sizeColumnsToFit();
+          }
+        );
       });
   };
 
   getColumnDefs = () => {
-    return [
-      {
-        headerName: "ID",
-        field: "id",
-      },
-      {
-        headerName: "Order number",
-        field: "orderNumber",
-        sortable: true,
-        unSortIcon: true,
-      },
-      {
-        headerName: "Responsible person",
-        field: "responsiblePerson",
-        sortable: true,
-        unSortIcon: true,
-      },
-      {
-        headerName: "Healthcare district",
-        field: "healthCareDistrict",
-        ...(this.state.isGroupingView
-          ? { rowGroup: true }
-          : { rowGroup: false }),
-      },
-      {
-        headerName: "Vaccine",
-        field: "vaccine",
-      },
-      {
-        headerName: "Injections",
-        field: "injections",
-      },
-      {
-        headerName: "Arrived on",
-        field: "arrived",
-        sortable: true,
-        unSortIcon: true,
-      },
-    ];
+    if (this.state.groupingEnabled) {
+      return [
+        {
+          headerName: "ID",
+          field: "id",
+        },
+        {
+          headerName: "Order number",
+          field: "orderNumber",
+          sortable: true,
+          unSortIcon: true,
+        },
+        {
+          headerName: "Responsible person",
+          field: "responsiblePerson",
+          sortable: true,
+          unSortIcon: true,
+        },
+        {
+          headerName: "Healthcare district",
+          field: "healthCareDistrict",
+          ...(this.state.isGroupingView
+            ? { rowGroup: true }
+            : { rowGroup: false }),
+        },
+        {
+          headerName: "Vaccine",
+          field: "vaccine",
+        },
+        {
+          headerName: "Injections",
+          field: "injections",
+        },
+        {
+          headerName: "Arrived on",
+          field: "arrived",
+          sortable: true,
+          unSortIcon: true,
+        },
+      ];
+    } else {
+      return [
+        {
+          headerName: "Vaccination ID",
+          field: "vaccinationId",
+        },
+        {
+          headerName: "Source bottle",
+          field: "sourceBottle",
+        },
+        {
+          headerName: "Gender",
+          field: "gender",
+          sortable: true,
+          unSortIcon: true,
+        },
+        {
+          headerName: "Vaccination date",
+          field: "vaccinationDate",
+        },
+      ];
+    }
   };
 
   onGridReady = async ({ api }) => {
-    await this.handleRowsFetch(this.state.selectedManufacturer);
+    await this.handleRowsFetch(this.state.selectedView);
     this.gridApi = api;
     this.gridApi.sizeColumnsToFit();
   };
@@ -109,10 +175,10 @@ export class App extends Component {
   onSelectionChanged = (e) => {
     this.setState(
       {
-        selectedManufacturer: e.target.value,
+        selectedView: e.target.value,
       },
       async () => {
-        await this.handleRowsFetch(this.state.selectedManufacturer);
+        await this.handleRowsFetch(this.state.selectedView);
       }
     );
   };
@@ -131,7 +197,11 @@ export class App extends Component {
   render = () => {
     return (
       <div className="app">
-        <Dropdown onChange={this.onSelectionChanged} onToggle={this.onToggle} />
+        <Dropdown
+          onChange={this.onSelectionChanged}
+          onToggle={this.onToggle}
+          groupingEnabled={this.state.groupingEnabled}
+        />
         <div className="ag-theme-alpine">
           <AgGridReact
             gridOptions={this.gridOptions}

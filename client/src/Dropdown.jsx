@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Switch, FormControlLabel } from "@material-ui/core";
 import PropTypes from "prop-types";
-import BRANDS from "./util/constants";
+import VIEWS from "./util/constants";
 
 export class Dropdown extends Component {
   constructor(props) {
@@ -11,20 +11,27 @@ export class Dropdown extends Component {
   render = () => {
     return (
       <div className="dropdown">
-        <p>Select manufacturer:</p>
+        <p>Select view:</p>
         <select id="selectBox" onChange={this.props.onChange}>
-          <option value={BRANDS.ANTIQUA.value}>{BRANDS.ANTIQUA.label}</option>
-          <option value={BRANDS.SOLARBUDDHICA.value}>
-            {BRANDS.SOLARBUDDHICA.label}
+          <option value={VIEWS.ANTIQUA.value}>{VIEWS.ANTIQUA.label}</option>
+          <option value={VIEWS.SOLARBUDDHICA.value}>
+            {VIEWS.SOLARBUDDHICA.label}
           </option>
-          <option value={BRANDS.ZERPFY.value}>{BRANDS.ZERPFY.label}</option>
+          <option value={VIEWS.ZERPFY.value}>{VIEWS.ZERPFY.label}</option>
+          <option value={VIEWS.VACCINATIONS.value}>
+            {VIEWS.VACCINATIONS.label}
+          </option>
         </select>
-        <FormControlLabel
-          label="Group by healthcare district"
-          labelPlacement="start"
-          control={<Switch />}
-          onChange={this.props.onToggle}
-        ></FormControlLabel>
+        {this.props.groupingEnabled ? (
+          <FormControlLabel
+            label="Group by healthcare district"
+            labelPlacement="start"
+            control={<Switch />}
+            onChange={this.props.onToggle}
+          ></FormControlLabel>
+        ) : (
+          <></>
+        )}
       </div>
     );
   };
@@ -33,4 +40,5 @@ export class Dropdown extends Component {
 Dropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
+  groupingEnabled: PropTypes.bool.isRequired,
 };

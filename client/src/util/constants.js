@@ -1,4 +1,4 @@
-export const BRANDS = {
+export const VIEWS = {
   ANTIQUA: {
     value: "antiqua",
     label: "Antiqua",
@@ -11,6 +11,10 @@ export const BRANDS = {
     value: "zerpfy",
     label: "Zerpfy",
   },
+  VACCINATIONS: {
+    value: "vaccinations",
+    label: "vaccinations",
+  },
 };
 
-export default BRANDS;
+export default VIEWS;
