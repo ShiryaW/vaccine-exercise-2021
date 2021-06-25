@@ -2,6 +2,12 @@ const fs = require("fs");
 const readline = require("readline");
 
 async function readFile(filepath) {
+  try {
+    await fs.promises.readFile(filepath);
+  } catch (e) {
+    return { error: e };
+  }
+
   return new Promise((resolve) => {
     let lines = [];
 

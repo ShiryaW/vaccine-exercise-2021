@@ -21,6 +21,16 @@ async function buildDatabase(db) {
     `${FILEPATH.RESOURCES}/vaccinations.source`
   );
 
+  if (
+    antiqua.error ||
+    solarBuddhica.error ||
+    zerpfy.error ||
+    vaccinations.error
+  ) {
+    console.error("Error reading database source files.");
+    return;
+  }
+
   const brands = {
     antiqua,
     solarBuddhica,
