@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dropdown renders the top bar with dropdown menu 1`] = `
+<div
+  className="dropdown"
+>
+  <p>
+    Select view:
+  </p>
+  <select
+    id="selectBox"
+    onChange={[MockFunction]}
+  >
+    <option
+      value="antiqua"
+    >
+      Antiqua orders
+    </option>
+    <option
+      value="solarBuddhica"
+    >
+      SolarBuddhica orders
+    </option>
+    <option
+      value="zerpfy"
+    >
+      Zerpfy orders
+    </option>
+    <option
+      value="vaccinations"
+    >
+      vaccinations
+    </option>
+  </select>
+  <WithStyles(ForwardRef(FormControlLabel))
+    control={
+      <WithStyles(ForwardRef(Switch))
+        checked={false}
+      />
+    }
+    label="Group by gender"
+    labelPlacement="start"
+    onChange={[MockFunction]}
+  />
+</div>
+`;

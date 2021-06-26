@@ -44,3 +44,5 @@ Dropdown.propTypes = {
   groupBy: PropTypes.string.isRequired,
   groupingDisabled: PropTypes.bool,
 };
+
+export default Dropdown;

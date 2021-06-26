@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App renders the UI 1`] = `
+<div
+  className="app"
+>
+  <div
+    className="grid"
+  >
+    <Dropdown
+      buttonChecked={false}
+      groupBy="healthcare district"
+      onChange={[Function]}
+      onToggle={[Function]}
+    />
+    <div
+      className="ag-theme-alpine"
+    >
+      <AgGridReact
+        disableStaticMarkup={false}
+        gridOptions={
+          Object {
+            "animateRows": true,
+            "columnDefs": Array [
+              Object {
+                "field": "id",
+                "headerName": "ID",
+              },
+              Object {
+                "field": "orderNumber",
+                "headerName": "Order number",
+                "sortable": true,
+                "unSortIcon": true,
+              },
+              Object {
+                "field": "responsiblePerson",
+                "headerName": "Responsible person",
+                "sortable": true,
+                "unSortIcon": true,
+              },
+              Object {
+                "field": "healthCareDistrict",
+                "headerName": "Healthcare district",
+                "rowGroup": false,
+              },
+              Object {
+                "field": "injections",
+                "headerName": "Injections",
+              },
+              Object {
+                "field": "arrived",
+                "headerName": "Arrived on",
+                "sortable": true,
+                "unSortIcon": true,
+              },
+            ],
+            "defaultColDef": Object {
+              "resizable": true,
+            },
+            "onGridReady": [Function],
+          }
+        }
+        legacyComponentRendering={false}
+        maxComponentCreationTimeMs={1000}
+        rowData={Array []}
+      />
+    </div>
+    <Footer
+      totalItems={0}
+    />
+  </div>
+  <div
+    className="sidebar"
+  >
+    <Calendar
+      maxDate={+275760-09-13T00:00:00.000Z}
+      maxDetail="month"
+      minDate={0000-12-31T22:20:11.000Z}
+      minDetail="century"
+      onChange={[Function]}
+      returnValue="start"
+      showNavigation={true}
+      showNeighboringMonth={true}
+      view="month"
+    />
+  </div>
+</div>
+`;

@@ -18,3 +18,5 @@ export class Footer extends Component {
 Footer.propTypes = {
   totalItems: PropTypes.number.isRequired,
 };
+
+export default Footer;
