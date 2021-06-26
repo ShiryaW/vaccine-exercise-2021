@@ -1,0 +1,9 @@
+{
+    "verbose": true,
+    "collectCoverageFrom": ["<rootDir>/**/*.{js}"],
+    "testEnvironment": "jsdom",
+    "testRegex": "(/src/.*|\\.)(test.js)$",
+    "moduleNameMapper": {
+        "\\.(css|less|scss)$": "<rootDir>/__mocks__/cssMock.js"
+      }
+}

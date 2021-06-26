@@ -17,4 +17,6 @@ export const VIEWS = {
   },
 };
 
-export default VIEWS;
+export const BRANDS = ["antiqua", "solarBuddhica", "zerpfy"];
+
+export default { VIEWS, BRANDS };

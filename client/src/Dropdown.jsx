@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Switch, FormControlLabel } from "@material-ui/core";
 import PropTypes from "prop-types";
-import VIEWS from "./util/constants";
+import { VIEWS } from "./util/constants";
 
 export class Dropdown extends Component {
   constructor(props) {

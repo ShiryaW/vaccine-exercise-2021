@@ -9,6 +9,7 @@
     "start-api": "nodemon --watch server server/src",
     "lint-client": "eslint --ext jsx --config client/.eslintrc.json client/src",
     "lint-server": "eslint --ext js --config server/.eslintrc.json server/src",
+    "test-client": "jest --config client/jest.config.json",
     "test-server": "jest --config server/jest.config.json"
   },
   "repository": {
@@ -28,6 +29,12 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-react": "^7.14.5",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.2",
+    "babel-jest": "^27.0.5",
+    "enzyme": "^3.11.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-node": "^11.1.0",

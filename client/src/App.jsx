@@ -1,13 +1,15 @@
 import "./App.css";
 import React, { Component } from "react";
 import { AgGridReact } from "ag-grid-react";
+import { Calendar } from "react-calendar";
 import { Dropdown } from "./Dropdown";
 import { Footer } from "./Footer";
 
 import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-import VIEWS from "./util/constants";
+import { VIEWS } from "./util/constants";
+import { parseTimestampToDate, parseDateToTimestamp } from "./util/helpers";
 
 export class App extends Component {
   constructor(props) {
@@ -36,16 +38,18 @@ export class App extends Component {
     this.gridApi && this.gridApi.sizeColumnsToFit();
   };
 
-  handleRowsFetch = async () => {
-    if (this.state.selectedView === VIEWS.VACCINATIONS.value) {
-      await this.fetchVaccinations();
+  handleRowsFetch = async (selectedView, date) => {
+    if (selectedView === VIEWS.VACCINATIONS.value) {
+      await this.fetchVaccinations(date);
     } else {
       await this.fetchManufacturer();
     }
   };
 
-  fetchVaccinations = async () => {
-    await fetch(`/vaccinations`, {
+  fetchVaccinations = async (date) => {
+    const url = date ? `/vaccinations?date=${date}` : `/vaccinations`;
+
+    await fetch(url, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -57,6 +61,10 @@ export class App extends Component {
         }
       })
       .then((data) => {
+        data.forEach((row) => {
+          row.vaccinationDate = parseTimestampToDate(row.vaccinationDate);
+        });
+
         this.setState(
           {
             rowData: data,
@@ -88,6 +96,10 @@ export class App extends Component {
         }
       })
       .then((data) => {
+        data.forEach((row) => {
+          row.arrived = parseTimestampToDate(row.arrived);
+        });
+
         this.setState(
           {
             rowData: data,
@@ -162,6 +174,8 @@ export class App extends Component {
         {
           headerName: "Vaccination date",
           field: "vaccinationDate",
+          sortable: true,
+          unSortIcon: true,
         },
       ];
     }
@@ -184,6 +198,11 @@ export class App extends Component {
     );
   };
 
+  onCalendarInput = async (value) => {
+    const timestamp = parseDateToTimestamp(value);
+    await this.handleRowsFetch(this.state.selectedView, timestamp);
+  };
+
   onToggle = () => {
     this.setState(
       {
@@ -198,23 +217,28 @@ export class App extends Component {
   render = () => {
     return (
       <div className="app">
-        <Dropdown
-          onChange={this.onSelectionChanged}
-          onToggle={this.onToggle}
-          groupBy={
-            this.state.selectedView === VIEWS.VACCINATIONS.value
-              ? "gender"
-              : "healthcare district"
-          }
-          buttonChecked={this.state.isGroupingView}
-        />
-        <div className="ag-theme-alpine">
-          <AgGridReact
-            gridOptions={this.gridOptions}
-            rowData={this.state.rowData}
+        <div className="grid">
+          <Dropdown
+            onChange={this.onSelectionChanged}
+            onToggle={this.onToggle}
+            groupBy={
+              this.state.selectedView === VIEWS.VACCINATIONS.value
+                ? "gender"
+                : "healthcare district"
+            }
+            buttonChecked={this.state.isGroupingView}
           />
+          <div className="ag-theme-alpine">
+            <AgGridReact
+              gridOptions={this.gridOptions}
+              rowData={this.state.rowData}
+            />
+          </div>
+          <Footer totalItems={this.state.totalItems} />
         </div>
-        <Footer totalItems={this.state.totalItems} />
+        <div className="sidebar">
+          <Calendar onChange={this.onCalendarInput} view="month" />
+        </div>
       </div>
     );
   };
