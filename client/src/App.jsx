@@ -17,7 +17,7 @@ export class App extends Component {
       selectedView: VIEWS.ANTIQUA.value,
       totalItems: 0,
       isGroupingView: false,
-      groupingEnabled: true,
+      groupingDisabled: false,
     };
 
     this.gridOptions = {
@@ -61,7 +61,8 @@ export class App extends Component {
           {
             rowData: data,
             totalItems: data.length,
-            groupingEnabled: false,
+            isGroupingView: false,
+            groupingDisabled: true,
           },
           () => {
             this.gridApi && this.gridApi.setColumnDefs(this.getColumnDefs());
@@ -91,7 +92,8 @@ export class App extends Component {
           {
             rowData: data,
             totalItems: data.length,
-            groupingEnabled: true,
+            isGroupingView: false,
+            groupingDisabled: false,
           },
           () => {
             this.gridApi && this.gridApi.setColumnDefs(this.getColumnDefs());
@@ -102,7 +104,7 @@ export class App extends Component {
   };
 
   getColumnDefs = () => {
-    if (this.state.groupingEnabled) {
+    if (this.state.selectedView !== VIEWS.VACCINATIONS.value) {
       return [
         {
           headerName: "ID",
@@ -126,10 +128,6 @@ export class App extends Component {
           ...(this.state.isGroupingView
             ? { rowGroup: true }
             : { rowGroup: false }),
-        },
-        {
-          headerName: "Vaccine",
-          field: "vaccine",
         },
         {
           headerName: "Injections",
@@ -157,6 +155,9 @@ export class App extends Component {
           field: "gender",
           sortable: true,
           unSortIcon: true,
+          ...(this.state.isGroupingView
+            ? { rowGroup: true }
+            : { rowGroup: false }),
         },
         {
           headerName: "Vaccination date",
@@ -200,7 +201,12 @@ export class App extends Component {
         <Dropdown
           onChange={this.onSelectionChanged}
           onToggle={this.onToggle}
-          groupingEnabled={this.state.groupingEnabled}
+          groupBy={
+            this.state.selectedView === VIEWS.VACCINATIONS.value
+              ? "gender"
+              : "healthcare district"
+          }
+          buttonChecked={this.state.isGroupingView}
         />
         <div className="ag-theme-alpine">
           <AgGridReact

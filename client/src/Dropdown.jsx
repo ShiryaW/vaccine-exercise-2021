@@ -22,11 +22,11 @@ export class Dropdown extends Component {
             {VIEWS.VACCINATIONS.label}
           </option>
         </select>
-        {this.props.groupingEnabled ? (
+        {!this.props.groupingDisabled ? (
           <FormControlLabel
-            label="Group by healthcare district"
+            label={`Group by ${this.props.groupBy}`}
             labelPlacement="start"
-            control={<Switch />}
+            control={<Switch checked={this.props.buttonChecked} />}
             onChange={this.props.onToggle}
           ></FormControlLabel>
         ) : (
@@ -40,5 +40,7 @@ export class Dropdown extends Component {
 Dropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
-  groupingEnabled: PropTypes.bool.isRequired,
+  buttonChecked: PropTypes.bool.isRequired,
+  groupBy: PropTypes.string.isRequired,
+  groupingDisabled: PropTypes.bool,
 };

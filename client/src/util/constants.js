@@ -1,15 +1,15 @@
 export const VIEWS = {
   ANTIQUA: {
     value: "antiqua",
-    label: "Antiqua",
+    label: "Antiqua orders",
   },
   SOLARBUDDHICA: {
     value: "solarBuddhica",
-    label: "SolarBuddhica",
+    label: "SolarBuddhica orders",
   },
   ZERPFY: {
     value: "zerpfy",
-    label: "Zerpfy",
+    label: "Zerpfy orders",
   },
   VACCINATIONS: {
     value: "vaccinations",
