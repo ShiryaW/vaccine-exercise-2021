@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 3001;
 const healthCheckHandler = require("./handlers/healthCheckHandler");
 const ordersHandler = require("./handlers/ordersHandler");
 const vaccinationsHandler = require("./handlers/vaccinationsHandler");
-const db = require("./util/database");
+const { db } = require("./util/database");
 
 const app = express();
 
@@ -17,6 +17,9 @@ app.get("/vaccinations", vaccinationsHandler);
 
 module.exports = {
   app,
-  db,
+  db: (async () => {
+    const database = await db;
+    return database;
+  })(),
   port: PORT,
 };

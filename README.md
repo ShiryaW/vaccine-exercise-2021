@@ -13,8 +13,7 @@ Web UI for visualizing COVID-19 vaccination data. The user can view data for ord
 
 # Improvement items
 - allow for more filtering options, e.g. by order number or ID
-- enable filtering for expired vaccines by date
+- more thorough test coverage (some time-consuming-looking test cases were knowingly skipped for the purposes of Speed™)
 
 # Known issues
-- some backend tests don't execute properly because they run before the database has time to set up. This has been an absolute pain in the neck for me to figure out and I put it on the backburner in order to get some actual content done in time. It's definitely #1 on the list of things to fix though.
-- the sidebar calendar's width scales and I don't like it
+- the numbers for expired bottles & doses don't look quite right but despite my best efforts I have not been able to figure out what is wrong with them

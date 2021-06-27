@@ -4,12 +4,14 @@ const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
-process.on("SIGINT", () => {
+process.on("SIGINT", async () => {
   console.log("Shutting down server...");
-  db.close((err) => {
-    if (err) {
-      return console.error("Error closing database connection:", err.message);
-    }
+  await db.then((database) => {
+    database.close((err) => {
+      if (err) {
+        return console.error("Error closing database connection:", err.message);
+      }
+    });
   });
   server.close(() => {
     console.log("Server closed.");

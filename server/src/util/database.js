@@ -3,15 +3,18 @@ const reader = require("./reader");
 
 const { FILEPATH } = require("./constants");
 
+let isBuilt = false;
+
 const db = new sqlite.Database(":memory:", async (err) => {
   if (err) {
     return console.error("Error connecting to database:", err.message);
   }
   console.log("Connected to SQLite3 database.");
-  await buildDatabase(db);
 });
 
 async function buildDatabase(db) {
+  if (isBuilt) return;
+
   const antiqua = await reader.readFile(`${FILEPATH.RESOURCES}/Antiqua.source`);
   const solarBuddhica = await reader.readFile(
     `${FILEPATH.RESOURCES}/SolarBuddhica.source`
@@ -73,6 +76,8 @@ async function buildDatabase(db) {
       }
     }
   );
+
+  isBuilt = true;
 }
 
 function populateBrandTable(db, brand, contents) {
@@ -92,5 +97,8 @@ function populatVaccinationsTable(db, contents) {
 }
 
 module.exports = {
-  db,
+  db: (async () => {
+    await buildDatabase(db);
+    return db;
+  })(),
 };
