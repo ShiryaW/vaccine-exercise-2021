@@ -4,7 +4,6 @@ module.exports = (req, res) => {
   let sql = `SELECT * FROM vaccinations`;
 
   if (req.query.date) {
-    console.log(req.query.date);
     sql = `SELECT * FROM vaccinations WHERE vaccinationDate LIKE '${req.query.date}%'`;
   }
 

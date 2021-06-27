@@ -7,7 +7,13 @@ module.exports = (req, res) => {
     return;
   }
 
-  const sql = `SELECT * FROM ${req.query.brand}`;
+  let sql = `SELECT * FROM ${req.query.brand}`;
+
+  if (req.query.before) {
+    sql = `SELECT * FROM ${req.query.brand} WHERE arrived <= "${req.query.before}"`;
+  } else if (req.query.date) {
+    sql = `SELECT * FROM ${req.query.brand} WHERE arrived LIKE "${req.query.date}%"`;
+  }
 
   db.all(sql, [], (err, rows) => {
     if (err) {

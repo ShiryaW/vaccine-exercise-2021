@@ -9,7 +9,14 @@ import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { VIEWS } from "./util/constants";
-import { parseTimestampToDate, parseDateToTimestamp } from "./util/helpers";
+import {
+  parseTimestampToDate,
+  parseDateToTimestamp,
+  parseDateToUIString,
+  getNumOfVaccinesExpiredBy,
+  defaultResponseHandler,
+  capitalize,
+} from "./util/helpers";
 
 export class App extends Component {
   constructor(props) {
@@ -20,6 +27,8 @@ export class App extends Component {
       totalItems: 0,
       isGroupingView: false,
       groupingDisabled: false,
+      expiredDoses: 0,
+      expiredBottles: 0,
     };
 
     this.gridOptions = {
@@ -42,7 +51,15 @@ export class App extends Component {
     if (selectedView === VIEWS.VACCINATIONS.value) {
       await this.fetchVaccinations(date);
     } else {
-      await this.fetchManufacturer();
+      await this.fetchManufacturer(date);
+      if (date) {
+        const { expiredBottles, expiredDoses } =
+          await getNumOfVaccinesExpiredBy(selectedView, date);
+        this.setState({
+          expiredBottles,
+          expiredDoses,
+        });
+      }
     }
   };
 
@@ -55,14 +72,12 @@ export class App extends Component {
         Accept: "application/json",
       },
     })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-      })
+      .then(defaultResponseHandler)
       .then((data) => {
         data.forEach((row) => {
-          row.vaccinationDate = parseTimestampToDate(row.vaccinationDate);
+          row.vaccinationDate = parseDateToUIString(
+            parseTimestampToDate(row.vaccinationDate)
+          );
         });
 
         this.setState(
@@ -80,24 +95,23 @@ export class App extends Component {
       });
   };
 
-  fetchManufacturer = async () => {
-    await fetch(
-      `/orders?brand=${encodeURIComponent(this.state.selectedView)}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-      })
+  fetchManufacturer = async (date) => {
+    const url = date
+      ? `/orders?brand=${encodeURIComponent(
+          this.state.selectedView
+        )}&date=${encodeURIComponent(date)}`
+      : `/orders?brand=${encodeURIComponent(this.state.selectedView)}`;
+
+    await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(defaultResponseHandler)
       .then((data) => {
         data.forEach((row) => {
-          row.arrived = parseTimestampToDate(row.arrived);
+          row.arrived = parseDateToUIString(parseTimestampToDate(row.arrived));
         });
 
         this.setState(
@@ -191,6 +205,8 @@ export class App extends Component {
     this.setState(
       {
         selectedView: e.target.value,
+        expiredBottles: 0,
+        expiredDoses: 0,
       },
       async () => {
         await this.handleRowsFetch(this.state.selectedView);
@@ -238,6 +254,20 @@ export class App extends Component {
         </div>
         <div className="sidebar">
           <Calendar onChange={this.onCalendarInput} view="month" />
+          {!(this.state.selectedView === VIEWS.VACCINATIONS.value) ? (
+            <div className="day-data">
+              <p>
+                No. of {capitalize(this.state.selectedView)} vaccines that have
+                expired by this day: <b>{this.state.expiredDoses}</b>
+              </p>
+              <p>
+                No. of {capitalize(this.state.selectedView)} bottles that have
+                expired by this day: <b>{this.state.expiredBottles}</b>
+              </p>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     );

@@ -83,6 +83,26 @@ exports[`App renders the UI 1`] = `
       showNeighboringMonth={true}
       view="month"
     />
+    <div
+      className="day-data"
+    >
+      <p>
+        No. of 
+        Antiqua
+         vaccines that have expired by this day: 
+        <b>
+          0
+        </b>
+      </p>
+      <p>
+        No. of 
+        Antiqua
+         bottles that have expired by this day: 
+        <b>
+          0
+        </b>
+      </p>
+    </div>
   </div>
 </div>
 `;

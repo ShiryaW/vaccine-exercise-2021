@@ -61,6 +61,16 @@ select {
   right: 0;
 }
 
+.sidebar p {
+  padding-left: 20px;
+  font-size: 18px;
+  color: #593523;
+}
+
+.sidebar p b {
+  font-weight: 700;
+}
+
 .react-calendar {
   padding: 20px;
 }
