@@ -12,6 +12,7 @@ const HEADERS = {
 }
 
 fixture("Vaccinations view with in-memory database").page(URL).beforeEach(async t => {
+  await pageModel.refresh();
   await t.maximizeWindow();
   await t.click(pageModel.dropdown.selectBox);
   await t.click(pageModel.dropdown.selectOptions.withText("vaccinations"));
@@ -44,8 +45,8 @@ test("Should allow the user to sort by gender and vaccination date", async t => 
   const firstRow = pageModel.grid.rowNth(0);
   const firstRowVaxID = firstRow.find(".ag-cell").withAttribute("col-id", "vaccinationId");
 
-  const firstRowIDUnsorted = "3d3440e2-357b-4139-857b-027d8bdcb85b";
-  const firstRowIDSortedByGenderDesc = "4b30e155-7105-4346-8d1b-9411178cf74a";
+  const firstRowIDUnsorted = "4b30e155-7105-4346-8d1b-9411178cf74a";
+  const firstRowIDSortedByGenderAsc = "23141063-8fa3-4f0d-8cee-c6fadedde057";
 
   await t.expect(firstRowVaxID.innerText)
     .eql(firstRowIDUnsorted)
@@ -54,9 +55,8 @@ test("Should allow the user to sort by gender and vaccination date", async t => 
     .notOk("The sorting icon should change on click to reflect the sorting state")
     .expect(sortIconAsc(HEADERS.GENDER).visible)
     .ok()
-    .click(sortIconAsc(HEADERS.GENDER))
     .expect(firstRowVaxID.innerText)
-    .eql(firstRowIDSortedByGenderDesc);
+    .eql(firstRowIDSortedByGenderAsc);
 });
 
 test("Should allow the user to filter rows based on the date of vaccination", async t => {
@@ -87,5 +87,5 @@ test("Should group the data into rows by gender when grouping is toggled", async
     .expect(firstHeader.innerText)
     .eql(HEADERS.GROUP)
     .expect(firstRowFirstCell.innerText)
-    .contains("female");
+    .contains("nonbinary");
 });

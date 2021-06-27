@@ -6,14 +6,16 @@ Web UI for visualizing COVID-19 vaccination data. The user can view data for ord
 2) run `npm start` to launch app on http://localhost:3000 (and server on port 3001)
 
 # How to execute tests
-1) `npm run lint` to lint the code
-2) `npm run test-client` to execute frontend tests
-3) `npm run test-testcafe` to execute automated testcafe tests in the browser (Firefox by default, available only when the app is running!)
-4) `npm run test-server` to execute backend tests (NOTE: will fail at the moment, see Known issues)
+- `npm run lint` to lint the code
+- `npm run test-client` to execute frontend tests
+- `npm run test-testcafe` to execute automated testcafe tests in the browser (Firefox by default, available only when the app is running!)
+- `npm run test-server` to execute backend tests
 
 # Improvement items
 - allow for more filtering options, e.g. by order number or ID
 - more thorough test coverage (some time-consuming-looking test cases were knowingly skipped for the purposes of Speed™)
+- figure out a less horrible way to make sure the database is ready before running the app
 
 # Known issues
 - the numbers for expired bottles & doses don't look quite right but despite my best efforts I have not been able to figure out what is wrong with them
+- backend tests still have issues with executing before the database is populated with data and may rarely fail (read: it's happened once or twice in dozens of runs)

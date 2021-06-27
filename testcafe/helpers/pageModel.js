@@ -1,4 +1,4 @@
-import { Selector } from "testcafe";
+import { Selector, ClientFunction } from "testcafe";
 
 class Dropdown {
   constructor() {
@@ -37,6 +37,12 @@ class AppPageModel {
     this.grid = new Grid();
     this.sidebar = new Sidebar();
     this.footer = new Footer();
+
+    this.refresh = async ()  => {
+      await ClientFunction(() => {
+        document.location.reload();
+      })();
+    }
   }
 }
 
